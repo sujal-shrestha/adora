@@ -1,8 +1,36 @@
 import 'package:flutter/material.dart';
+import 'dashboard_page.dart';
 import 'signup_page.dart';
 
-class LoginPage extends StatelessWidget {
+class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
+
+  @override
+  State<LoginPage> createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
+
+  void _handleLogin() {
+    final email = emailController.text.trim();
+    final password = passwordController.text.trim();
+
+    if (email == 'admin' && password == 'admin123') {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => const DashboardPage()),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Invalid email or password'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -14,31 +42,17 @@ class LoginPage extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              // Logo Mark
-              Image.asset(
-                'assets/images/logo_mark.png',
-                height: 48,
-              ),
+              Image.asset('assets/images/logo_mark.png', height: 48),
               const SizedBox(height: 16),
-
-              // Word Mark
-              Image.asset(
-                'assets/images/word_mark.png',
-                height: 36,
-              ),
+              Image.asset('assets/images/word_mark.png', height: 36),
               const SizedBox(height: 12),
-
               const Text(
                 'Your AI-Powered Marketing Brain',
-                style: TextStyle(
-                  fontSize: 14,
-                  color: Colors.grey,
-                ),
+                style: TextStyle(fontSize: 14, color: Colors.grey),
               ),
               const SizedBox(height: 36),
-
-              // Email
               TextField(
+                controller: emailController,
                 decoration: InputDecoration(
                   labelText: 'Email',
                   border: OutlineInputBorder(
@@ -47,9 +61,8 @@ class LoginPage extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 16),
-
-              // Password
               TextField(
+                controller: passwordController,
                 obscureText: true,
                 decoration: InputDecoration(
                   labelText: 'Password',
@@ -59,30 +72,26 @@ class LoginPage extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 24),
-
-              // Log In Button
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
+                  onPressed: _handleLogin,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Color(0xFF2979FF),
+                    backgroundColor: const Color(0xFF2979FF),
                     padding: const EdgeInsets.symmetric(vertical: 16),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
                   ),
-                  onPressed: () {},
                   child: const Text(
                     'Log In',
-                    style: TextStyle(fontSize: 16),
+                    style: TextStyle(color: Colors.white),
                   ),
                 ),
               ),
               const SizedBox(height: 16),
-
-              // OR
-              Row(
-                children: const [
+              const Row(
+                children: [
                   Expanded(child: Divider()),
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 8),
@@ -92,8 +101,6 @@ class LoginPage extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 12),
-
-              // Sign Up
               GestureDetector(
                 onTap: () {
                   Navigator.push(
@@ -110,12 +117,7 @@ class LoginPage extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 12),
-
-              // Forgot Password
-              const Text(
-                'Forgot Password?',
-                style: TextStyle(color: Colors.grey),
-              ),
+              const Text('Forgot Password?', style: TextStyle(color: Colors.grey)),
             ],
           ),
         ),
