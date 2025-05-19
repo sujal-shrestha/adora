@@ -23,12 +23,18 @@ class _SplashPageState extends State<SplashPage> {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
+    return Scaffold(
       backgroundColor: Colors.white,
       body: Center(
-        child: Text(
-          'Adora',
-          style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold, color: Colors.blue),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Image.asset('assets/images/logo_mark.png', height: 100),
+            const SizedBox(height: 16),
+            Image.asset('assets/images/word_mark.png', height: 40),
+            const SizedBox(height: 32),
+            const CircularProgressIndicator(),
+          ],
         ),
       ),
     );
