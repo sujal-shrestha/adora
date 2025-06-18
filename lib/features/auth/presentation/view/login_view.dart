@@ -1,7 +1,7 @@
+import 'package:adora_mobile_app/features/home/presentation/view/home_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../view_model/login_view_model.dart';
-import '../../../home/presentation/view/dashboard_view.dart';
 import '../view_model/signup_view_model.dart';
 import 'signup_view.dart';
 
@@ -28,7 +28,7 @@ class LoginView extends StatelessWidget {
             Future.delayed(const Duration(seconds: 1), () {
               Navigator.pushReplacement(
                 context,
-                MaterialPageRoute(builder: (_) => const DashboardView()),
+                MaterialPageRoute(builder: (_) => const HomeView()),
               );
             });
           } else if (state is LoginFailure) {
