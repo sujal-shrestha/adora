@@ -12,13 +12,13 @@ abstract class UserLocalDataSource {
 class UserLocalDataSourceImpl implements UserLocalDataSource {
   @override
   Future<void> addUser(UserModel user) async {
-    final box = await Hive.openBox<UserModel>(HiveTableConstant.studentBox);
+    final box = await Hive.openBox<UserModel>(HiveTableConstant.userBox);
     await box.put(user.email, user);
   }
 
   @override
   UserModel? getUser(String email) {
-    final box = Hive.box<UserModel>(HiveTableConstant.studentBox);
+    final box = Hive.box<UserModel>(HiveTableConstant.userBox);
     return box.get(email);
   }
 }
