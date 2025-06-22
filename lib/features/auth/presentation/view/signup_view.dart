@@ -21,7 +21,6 @@ class SignupView extends StatelessWidget {
                 duration: Duration(seconds: 1),
               ),
             );
-
             Future.delayed(const Duration(seconds: 1), () {
               Navigator.pop(context);
             });
@@ -34,97 +33,134 @@ class SignupView extends StatelessWidget {
             );
           }
         },
-        child: Center(
+        child: SafeArea(
           child: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(horizontal: 32),
+            padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 30),
             child: Form(
               key: viewModel.formKey,
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Image.asset('assets/images/logo_mark.png', height: 56),
-                  const SizedBox(height: 16),
-                  Image.asset('assets/images/word_mark.png', height: 28),
-                  const SizedBox(height: 12),
-                  const Text(
-                    'Create your AI-powered workspace',
-                    style: TextStyle(fontSize: 14, color: Colors.grey),
+                  const Icon(Icons.arrow_back),
+                  const SizedBox(height: 40),
+                  Center(
+                    child: Column(
+                      children: [
+                        Image.asset('assets/images/logo_mark.png', height: 80),
+                        const SizedBox(height: 12),
+                        const Text(
+                          'Create your AI-powered workspace',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                            color: Colors.black87,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
+                    ),
                   ),
-                  const SizedBox(height: 28),
+                  const SizedBox(height: 32),
 
-                  TextFormField(
+                  _buildInputField(
                     controller: viewModel.nameController,
-                    decoration: const InputDecoration(labelText: 'Name'),
-                    validator: (value) => value!.isEmpty ? 'Enter name' : null,
+                    label: "Full Name",
+                    validator: (value) => value!.isEmpty ? 'Enter your name' : null,
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 20),
 
-                  TextFormField(
+                  _buildInputField(
                     controller: viewModel.emailController,
-                    decoration: const InputDecoration(labelText: 'Email'),
-                    validator: (value) => value!.isEmpty ? 'Enter email' : null,
+                    label: "Email Address",
+                    validator: (value) => value!.isEmpty ? 'Enter your email' : null,
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 20),
 
-                  TextFormField(
+                  _buildInputField(
                     controller: viewModel.passwordController,
-                    obscureText: true,
-                    decoration: const InputDecoration(labelText: 'Password'),
-                    validator: (value) => value!.length < 6
-                        ? 'Password must be at least 6 characters'
-                        : null,
+                    label: "Password",
+                    obscure: true,
+                    validator: (value) =>
+                        value!.length < 6 ? 'At least 6 characters required' : null,
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 20),
 
-                  TextFormField(
+                  _buildInputField(
                     controller: viewModel.confirmPasswordController,
-                    obscureText: true,
-                    decoration: const InputDecoration(labelText: 'Confirm Password'),
-                    validator: (value) => value!.isEmpty ? 'Confirm your password' : null,
+                    label: "Confirm Password",
+                    obscure: true,
+                    validator: (value) =>
+                        value!.isEmpty ? 'Please confirm your password' : null,
                   ),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: 30),
 
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
                       onPressed: () => viewModel.signup(context),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.blue,
-                        foregroundColor: Colors.white,
+                        backgroundColor: const Color(0xFF2979FF),
                         padding: const EdgeInsets.symmetric(vertical: 16),
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
+                          borderRadius: BorderRadius.circular(10),
                         ),
                       ),
-                      child: const Text('Sign Up'),
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-
-                  Row(
-                    children: const [
-                      Expanded(child: Divider()),
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 8),
-                        child: Text('or'),
+                      child: const Text(
+                        'SIGN UP',
+                        style: TextStyle(color: Colors.white, fontSize: 16),
                       ),
-                      Expanded(child: Divider()),
-                    ],
+                    ),
                   ),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: 24),
 
-                  GestureDetector(
-                    onTap: () => Navigator.pop(context),
-                    child: const Text(
-                      'Log In',
-                      style: TextStyle(color: Colors.blue, fontWeight: FontWeight.w500),
+                  Center(
+                    child: GestureDetector(
+                      onTap: () => Navigator.pop(context),
+                      child: const Text.rich(
+                        TextSpan(
+                          text: "Have an account? ",
+                          children: [
+                            TextSpan(
+                              text: "Log in",
+                              style: TextStyle(color: Color(0xFF2979FF), fontWeight: FontWeight.w600),
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
                   ),
                   const SizedBox(height: 12),
-                  const Text('Need help?', style: TextStyle(color: Colors.grey)),
+                  const Center(child: Text('Need help?', style: TextStyle(color: Colors.grey))),
                 ],
               ),
             ),
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildInputField({
+    required TextEditingController controller,
+    required String label,
+    bool obscure = false,
+    required String? Function(String?) validator,
+  }) {
+    return TextFormField(
+      controller: controller,
+      obscureText: obscure,
+      validator: validator,
+      decoration: InputDecoration(
+        labelText: label,
+        labelStyle: const TextStyle(color: Colors.black54),
+        filled: true,
+        fillColor: const Color(0xFFF6F6F6),
+        focusedBorder: OutlineInputBorder(
+          borderSide: const BorderSide(color: Color(0xFF2979FF)),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
         ),
       ),
     );
