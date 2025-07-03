@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../view_model/login_view_model.dart';
 import '../view_model/signup_view_model.dart';
+import '../../../../../app/service_locator.dart';
 import 'signup_view.dart';
 
 class LoginView extends StatelessWidget {
@@ -10,7 +11,8 @@ class LoginView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final viewModel = context.read<LoginViewModel>();
+    final emailController = TextEditingController();
+    final passwordController = TextEditingController();
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -55,8 +57,9 @@ class LoginView extends StatelessWidget {
                   style: TextStyle(fontSize: 14, color: Colors.grey),
                 ),
                 const SizedBox(height: 36),
+
                 TextField(
-                  controller: viewModel.emailController,
+                  controller: emailController,
                   decoration: InputDecoration(
                     labelText: 'Email',
                     border: OutlineInputBorder(
@@ -65,8 +68,9 @@ class LoginView extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 16),
+
                 TextField(
-                  controller: viewModel.passwordController,
+                  controller: passwordController,
                   obscureText: true,
                   decoration: InputDecoration(
                     labelText: 'Password',
@@ -76,10 +80,18 @@ class LoginView extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 24),
+
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
-                    onPressed: () => viewModel.login(),
+                    onPressed: () {
+                      final email = emailController.text.trim();
+                      final password = passwordController.text.trim();
+
+                      context.read<LoginViewModel>().add(
+                        LoginButtonPressed(email: email, password: password),
+                      );
+                    },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFF2979FF),
                       padding: const EdgeInsets.symmetric(vertical: 16),
@@ -90,6 +102,7 @@ class LoginView extends StatelessWidget {
                     child: const Text('Log In', style: TextStyle(color: Colors.white)),
                   ),
                 ),
+
                 const SizedBox(height: 16),
                 const Row(
                   children: [
@@ -102,13 +115,14 @@ class LoginView extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 12),
+
                 GestureDetector(
                   onTap: () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
                         builder: (_) => BlocProvider(
-                          create: (_) => SignupViewModel(),
+                          create: (_) => sl<SignupViewModel>(), // ✅ FIXED: inject via GetIt
                           child: const SignupView(),
                         ),
                       ),
@@ -122,6 +136,7 @@ class LoginView extends StatelessWidget {
                     ),
                   ),
                 ),
+
                 const SizedBox(height: 12),
                 const Text('Forgot Password?', style: TextStyle(color: Colors.grey)),
               ],
