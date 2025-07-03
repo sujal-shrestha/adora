@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:adora_mobile_app/app/service_locator.dart';
 import 'features/splash/presentation/view/splash_view.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Initialize Hive
-  await Hive.initFlutter();
+  setupLocator();
 
-  // Open users box
+  await Hive.initFlutter();
   await Hive.openBox('users');
 
   runApp(const MyApp());
