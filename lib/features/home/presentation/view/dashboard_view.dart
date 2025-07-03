@@ -7,28 +7,92 @@ class DashboardView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final headlineStyle = Theme.of(context).textTheme.headlineMedium?.copyWith(
-          fontFamily: 'Inter Bold',
-          fontWeight: FontWeight.bold,
-        );
-
-    final bodyStyle = Theme.of(context).textTheme.bodyLarge?.copyWith(
-          fontFamily: 'OpenSans Regular',
-        );
-
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(
-        title: const Text('Dashboard'),
-        centerTitle: true,
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Hi ${username ?? 'there'} 👋',
+                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
+              ),
+              const SizedBox(height: 8),
+              const Text('Welcome to Adora, your AI-powered workspace.'),
+              const SizedBox(height: 24),
+
+              // Stats Cards
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  _buildStatCard('Campaigns', '12'),
+                  _buildStatCard('Clicks', '980'),
+                  _buildStatCard('Leads', '56'),
+                ],
+              ),
+              const SizedBox(height: 24),
+
+              // Primary Actions
+              Row(
+                children: [
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () {},
+                      child: const Text('Create Ad'),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: OutlinedButton(
+                      onPressed: () {},
+                      child: const Text('Generate Content'),
+                    ),
+                  ),
+                ],
+              ),
+
+              const SizedBox(height: 30),
+              const Text('Recent Activity', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+              const SizedBox(height: 12),
+              Expanded(
+                child: ListView(
+                  children: const [
+                    ListTile(
+                      leading: Icon(Icons.campaign_outlined),
+                      title: Text('Created "Summer Promo" campaign'),
+                      subtitle: Text('2 hours ago'),
+                    ),
+                    ListTile(
+                      leading: Icon(Icons.edit_note),
+                      title: Text('Generated ad copy for Facebook'),
+                      subtitle: Text('1 day ago'),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
-      body: Center(
+    );
+  }
+
+  Widget _buildStatCard(String title, String value) {
+    return Card(
+      elevation: 2,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: Container(
+        width: 100,
+        padding: const EdgeInsets.all(12),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text('Hi ${username ?? 'there'} 👋', style: headlineStyle),
-            const SizedBox(height: 10),
-            Text('Welcome to Adora', style: bodyStyle),
+            Text(value, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+            const SizedBox(height: 4),
+            Text(title, style: const TextStyle(fontSize: 12, color: Colors.grey)),
           ],
         ),
       ),
