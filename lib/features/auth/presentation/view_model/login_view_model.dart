@@ -1,30 +1,40 @@
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
-import 'package:hive/hive.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:adora_mobile_app/features/auth/domain/repository/user_repository.dart';
 
+part 'login_event.dart';
 part 'login_state.dart';
 
-class LoginViewModel extends Cubit<LoginState> {
-  LoginViewModel() : super(LoginInitial());
+class LoginViewModel extends Bloc<LoginEvent, LoginState> {
+  final UserRepository userRepository;
 
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
 
-  void login() {
-    final email = emailController.text.trim();
-    final password = passwordController.text.trim();
+  final FlutterSecureStorage secureStorage = const FlutterSecureStorage();
 
-    final userBox = Hive.box('users');
+  LoginViewModel(this.userRepository) : super(LoginInitial()) {
+    on<LoginButtonPressed>(_onLoginPressed);
+  }
 
-    final user = userBox.values.firstWhere(
-      (user) => user['email'] == email && user['password'] == password,
-      orElse: () => null,
-    );
+  Future<void> _onLoginPressed(
+    LoginButtonPressed event,
+    Emitter<LoginState> emit,
+  ) async {
+    emit(LoginLoading());
 
-    if (user != null) {
-      emit(LoginSuccess());
-    } else {
-      emit(LoginFailure("Invalid email or password"));
+    try {
+      final user = await userRepository.loginUser(event.email, event.password);
+
+      if (user != null && user.token != null) {
+        await secureStorage.write(key: 'token', value: user.token);
+        emit(LoginSuccess());
+      } else {
+        emit(LoginFailure("Login failed. Invalid user or token."));
+      }
+    } catch (e) {
+      emit(LoginFailure(e.toString().replaceAll('Exception: ', '')));
     }
   }
 
