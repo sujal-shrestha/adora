@@ -1,68 +1,39 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:hive/hive.dart';
+import 'package:adora_mobile_app/features/auth/domain/entity/user_entity.dart';
+import 'package:adora_mobile_app/features/auth/domain/repository/user_repository.dart';
 
+part 'signup_event.dart';
 part 'signup_state.dart';
 
-class SignupViewModel extends Cubit<SignupState> {
-  SignupViewModel() : super(SignupInitial());
+class SignupViewModel extends Bloc<SignupEvent, SignupState> {
+  final UserRepository userRepository;
 
-  final formKey = GlobalKey<FormState>();
+  SignupViewModel(this.userRepository) : super(SignupInitial()) {
+    on<SignupButtonPressed>(_onSignupPressed);
+  }
 
-  final nameController = TextEditingController();
-  final emailController = TextEditingController();
-  final passwordController = TextEditingController();
-  final confirmPasswordController = TextEditingController();
+  Future<void> _onSignupPressed(
+    SignupButtonPressed event,
+    Emitter<SignupState> emit,
+  ) async {
+    emit(SignupLoading());
 
-  Future<void> signup(BuildContext context) async {
-    if (!formKey.currentState!.validate()) return;
-
-    final name = nameController.text.trim();
-    final email = emailController.text.trim();
-    final password = passwordController.text.trim();
-    final confirmPassword = confirmPasswordController.text.trim();
-
-    if (password != confirmPassword) {
+    if (event.password != event.confirmPassword) {
       emit(SignupFailure('Passwords do not match'));
       return;
     }
 
-    final userBox = Hive.box('users');
+    try {
+      final user = UserEntity(
+        name: event.name,
+        email: event.email,
+        password: event.password, // ✅ include password!
+      );
 
-    // Check if user already exists
-    final existingUser = userBox.values.firstWhere(
-      (user) => user['email'] == email,
-      orElse: () => null,
-    );
-
-    if (existingUser != null) {
-      emit(SignupFailure('User already exists'));
-      return;
+      await userRepository.registerUser(user);
+      emit(SignupSuccess());
+    } catch (e) {
+      emit(SignupFailure(e.toString().replaceAll('Exception: ', '')));
     }
-
-    // Save new user
-    await userBox.add({
-      'name': name,
-      'email': email,
-      'password': password,
-    });
-
-    emit(SignupSuccess());
-  }
-
-  void clearControllers() {
-    nameController.clear();
-    emailController.clear();
-    passwordController.clear();
-    confirmPasswordController.clear();
-  }
-
-  @override
-  Future<void> close() {
-    nameController.dispose();
-    emailController.dispose();
-    passwordController.dispose();
-    confirmPasswordController.dispose();
-    return super.close();
   }
 }
