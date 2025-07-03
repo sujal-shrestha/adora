@@ -2,13 +2,32 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../view_model/signup_view_model.dart';
 
-class SignupView extends StatelessWidget {
+class SignupView extends StatefulWidget {
   const SignupView({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final viewModel = context.read<SignupViewModel>();
+  State<SignupView> createState() => _SignupViewState();
+}
 
+class _SignupViewState extends State<SignupView> {
+  final formKey = GlobalKey<FormState>();
+
+  final nameController = TextEditingController();
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
+  final confirmPasswordController = TextEditingController();
+
+  @override
+  void dispose() {
+    nameController.dispose();
+    emailController.dispose();
+    passwordController.dispose();
+    confirmPasswordController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       body: BlocListener<SignupViewModel, SignupState>(
@@ -37,7 +56,7 @@ class SignupView extends StatelessWidget {
           child: SingleChildScrollView(
             padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 30),
             child: Form(
-              key: viewModel.formKey,
+              key: formKey,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -63,30 +82,33 @@ class SignupView extends StatelessWidget {
                   const SizedBox(height: 32),
 
                   _buildInputField(
-                    controller: viewModel.nameController,
+                    controller: nameController,
                     label: "Full Name",
-                    validator: (value) => value!.isEmpty ? 'Enter your name' : null,
+                    validator: (value) =>
+                        value!.isEmpty ? 'Enter your name' : null,
                   ),
                   const SizedBox(height: 20),
 
                   _buildInputField(
-                    controller: viewModel.emailController,
+                    controller: emailController,
                     label: "Email Address",
-                    validator: (value) => value!.isEmpty ? 'Enter your email' : null,
+                    validator: (value) =>
+                        value!.isEmpty ? 'Enter your email' : null,
                   ),
                   const SizedBox(height: 20),
 
                   _buildInputField(
-                    controller: viewModel.passwordController,
+                    controller: passwordController,
                     label: "Password",
                     obscure: true,
-                    validator: (value) =>
-                        value!.length < 6 ? 'At least 6 characters required' : null,
+                    validator: (value) => value!.length < 6
+                        ? 'At least 6 characters required'
+                        : null,
                   ),
                   const SizedBox(height: 20),
 
                   _buildInputField(
-                    controller: viewModel.confirmPasswordController,
+                    controller: confirmPasswordController,
                     label: "Confirm Password",
                     obscure: true,
                     validator: (value) =>
@@ -97,7 +119,19 @@ class SignupView extends StatelessWidget {
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
-                      onPressed: () => viewModel.signup(context),
+                      onPressed: () {
+                        if (!formKey.currentState!.validate()) return;
+
+                        context.read<SignupViewModel>().add(
+                              SignupButtonPressed(
+                                name: nameController.text.trim(),
+                                email: emailController.text.trim(),
+                                password: passwordController.text.trim(),
+                                confirmPassword:
+                                    confirmPasswordController.text.trim(),
+                              ),
+                            );
+                      },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFF2979FF),
                         padding: const EdgeInsets.symmetric(vertical: 16),
@@ -122,7 +156,9 @@ class SignupView extends StatelessWidget {
                           children: [
                             TextSpan(
                               text: "Log in",
-                              style: TextStyle(color: Color(0xFF2979FF), fontWeight: FontWeight.w600),
+                              style: TextStyle(
+                                  color: Color(0xFF2979FF),
+                                  fontWeight: FontWeight.w600),
                             ),
                           ],
                         ),
@@ -130,7 +166,9 @@ class SignupView extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 12),
-                  const Center(child: Text('Need help?', style: TextStyle(color: Colors.grey))),
+                  const Center(
+                      child: Text('Need help?',
+                          style: TextStyle(color: Colors.grey))),
                 ],
               ),
             ),
