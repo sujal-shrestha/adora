@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dashboard_view.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
@@ -11,7 +12,7 @@ class _HomeViewState extends State<HomeView> {
   int _currentIndex = 0;
 
   final List<Widget> _pages = [
-    const Center(child: Text("Dashboard Content")),
+    const DashboardView(username: "Sujal"), 
     const Center(child: Text("Create Ads")),
     const Center(child: Text("Spy on Competitors")),
     const Center(child: Text("Learn Content")),
