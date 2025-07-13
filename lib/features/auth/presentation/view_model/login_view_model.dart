@@ -1,7 +1,8 @@
+import 'package:adora_mobile_app/features/auth/domain/repository/user_repository.dart';
+import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:adora_mobile_app/features/auth/domain/repository/user_repository.dart';
 
 part 'login_event.dart';
 part 'login_state.dart';
@@ -12,10 +13,12 @@ class LoginViewModel extends Bloc<LoginEvent, LoginState> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
 
-  final FlutterSecureStorage secureStorage = const FlutterSecureStorage();
+  final FlutterSecureStorage secureStorage;
 
-  LoginViewModel(this.userRepository) : super(LoginInitial()) {
-    on<LoginButtonPressed>(_onLoginPressed);
+  LoginViewModel(this.userRepository, {FlutterSecureStorage? secureStorage})
+    : secureStorage = secureStorage ?? const FlutterSecureStorage(),
+      super(LoginInitial()) {
+  on<LoginButtonPressed>(_onLoginPressed);
   }
 
   Future<void> _onLoginPressed(

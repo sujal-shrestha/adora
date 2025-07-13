@@ -1,6 +1,6 @@
+import 'package:adora_mobile_app/features/auth/domain/repository/user_repository.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:adora_mobile_app/features/auth/domain/entity/user_entity.dart';
-import 'package:adora_mobile_app/features/auth/domain/repository/user_repository.dart';
 
 part 'signup_event.dart';
 part 'signup_state.dart';
