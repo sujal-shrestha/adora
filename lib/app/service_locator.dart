@@ -1,3 +1,4 @@
+import 'package:adora_mobile_app/features/auth/data/repository/user_repository_impl.dart';
 import 'package:get_it/get_it.dart';
 
 // Data sources
@@ -5,7 +6,6 @@ import '../../features/auth/data/data_source/user_local_datasource.dart';
 
 // Repositories
 import '../../features/auth/domain/repository/user_repository.dart';
-import '../../features/auth/data/repository/user_local_repository_impl.dart';
 
 // ViewModels (Bloc)
 import '../../features/auth/presentation/view_model/login_view_model.dart';

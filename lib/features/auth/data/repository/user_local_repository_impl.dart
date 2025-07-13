@@ -1,7 +1,7 @@
 import 'dart:convert';
+import 'package:adora_mobile_app/features/auth/domain/repository/user_repository.dart';
 import 'package:http/http.dart' as http;
 import '../../domain/entity/user_entity.dart';
-import '../../domain/repository/user_repository.dart';
 
 class UserRepositoryImpl implements UserRepository {
   final baseUrl = 'http://10.0.2.2:5050/api/auth';
