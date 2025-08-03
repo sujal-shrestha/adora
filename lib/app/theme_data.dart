@@ -8,7 +8,7 @@ ThemeData getApplicationTheme() {
     appBarTheme: const AppBarTheme(
           centerTitle: true,
           elevation: 0,
-          backgroundColor: Colors.lightBlue,
+          backgroundColor: Color.fromARGB(255, 167, 178, 183),
         ),
  );
 }
