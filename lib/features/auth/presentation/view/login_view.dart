@@ -7,6 +7,7 @@ import '../../../../../app/service_locator.dart';
 import 'signup_view.dart';
 
 class LoginView extends StatelessWidget {
+  static const routeName = '/login';
   const LoginView({super.key});
 
   @override

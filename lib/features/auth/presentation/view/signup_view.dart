@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../view_model/signup_view_model.dart';
 
 class SignupView extends StatefulWidget {
+  static const routeName = '/signup';
   const SignupView({super.key});
 
   @override
