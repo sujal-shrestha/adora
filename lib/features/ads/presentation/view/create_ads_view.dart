@@ -1,11 +1,9 @@
 // lib/features/ads/presentation/view/create_ads_view.dart
 
-import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:sensors_plus/sensors_plus.dart';
 
 import '../../../../app/service_locator.dart';
 import '../../../auth/domain/usecases/get_profile_usecase.dart';
@@ -37,28 +35,10 @@ class _CreateAdsBodyState extends State<_CreateAdsBody> {
   int _credits = 0;
   bool _loadingCredits = true;
 
-  // sensor subscriptions & rotation state
-  StreamSubscription<AccelerometerEvent>? _accelSub;
-  StreamSubscription<GyroscopeEvent>? _gyroSub;
-  double _rotation = 0.0;
-
   @override
   void initState() {
     super.initState();
     _loadCredits();
-
-    // shake to submit
-    _accelSub = accelerometerEvents.listen((e) {
-      final mag2 = e.x * e.x + e.y * e.y + e.z * e.z;
-      if (mag2 > 25) _submit();
-    });
-
-    // gyro tilt effect
-    _gyroSub = gyroscopeEvents.listen((e) {
-      setState(() {
-        _rotation += e.z * 0.05;
-      });
-    });
   }
 
   Future<void> _loadCredits() async {
@@ -66,7 +46,7 @@ class _CreateAdsBodyState extends State<_CreateAdsBody> {
       final user = await sl<GetProfileUseCase>()();
       setState(() => _credits = user.credits);
     } catch (_) {
-      // ignore
+      // ignore errors
     } finally {
       setState(() => _loadingCredits = false);
     }
@@ -75,8 +55,6 @@ class _CreateAdsBodyState extends State<_CreateAdsBody> {
   @override
   void dispose() {
     _promptController.dispose();
-    _accelSub?.cancel();
-    _gyroSub?.cancel();
     super.dispose();
   }
 
@@ -117,7 +95,6 @@ class _CreateAdsBodyState extends State<_CreateAdsBody> {
         listener: (context, state) {
           if (state is GenerateAdSuccess) {
             setState(() => _credits = state.remainingCredits);
-            // “notification”
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(content: Text('🎉 Your ad is ready!')),
             );
@@ -133,7 +110,6 @@ class _CreateAdsBodyState extends State<_CreateAdsBody> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Credits card
               Card(
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
@@ -167,34 +143,27 @@ class _CreateAdsBodyState extends State<_CreateAdsBody> {
                 ),
               ),
               const SizedBox(height: 24),
-
-              // Prompt input with rotation
               Card(
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
                 elevation: 2,
                 clipBehavior: Clip.hardEdge,
-                child: Transform.rotate(
-                  angle: _rotation,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 12, vertical: 8),
-                    child: TextField(
-                      controller: _promptController,
-                      decoration: const InputDecoration(
-                        hintText: 'Describe your ad idea…',
-                        border: InputBorder.none,
-                      ),
-                      maxLines: 2,
-                      onSubmitted: (_) => _submit(),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 12, vertical: 8),
+                  child: TextField(
+                    controller: _promptController,
+                    decoration: const InputDecoration(
+                      hintText: 'Describe your ad idea…',
+                      border: InputBorder.none,
                     ),
+                    maxLines: 2,
+                    onSubmitted: (_) => _submit(),
                   ),
                 ),
               ),
               const SizedBox(height: 12),
-
-              // Generate button
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
@@ -206,13 +175,11 @@ class _CreateAdsBodyState extends State<_CreateAdsBody> {
                       borderRadius: BorderRadius.circular(12),
                     ),
                   ),
-                  child:
-                      const Text('Generate (5 credits)', style: TextStyle(fontSize: 16)),
+                  child: const Text('Generate (5 credits)',
+                      style: TextStyle(fontSize: 16)),
                 ),
               ),
               const SizedBox(height: 24),
-
-              // Preview
               BlocBuilder<GenerateAdBloc, GenerateAdState>(
                 builder: (context, state) {
                   if (state is GenerateAdLoading) {
@@ -235,10 +202,10 @@ class _CreateAdsBodyState extends State<_CreateAdsBody> {
                         loadingBuilder: (ctx, child, prog) =>
                             prog == null
                                 ? child
-                                : const Center(child: CircularProgressIndicator()),
+                                : const Center(
+                                    child: CircularProgressIndicator()),
                       );
                     }
-
                     return Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [

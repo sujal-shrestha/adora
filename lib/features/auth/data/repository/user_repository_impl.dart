@@ -74,7 +74,7 @@ class UserRepositoryImpl implements UserRepository {
       password   : '',                   // do not store
       token      : token,
       profilePic : pic,
-      credits    : (userJson['credits'] is int) ? userJson['credits'] as int : 0,
+      credits    : (userJson['credits'] is int) ? userJson['credits'] as int : 20,
     );
   }
 
@@ -101,7 +101,7 @@ class UserRepositoryImpl implements UserRepository {
       password   : '',
       token      : token,
       profilePic : body['profilePic'] ?? '',
-      credits    : (body['credits'] is int) ? body['credits'] as int : 0,
+      credits    : (body['credits'] is int) ? body['credits'] as int : 20,
     );
   }
 
@@ -135,7 +135,7 @@ class UserRepositoryImpl implements UserRepository {
       password   : '',
       token      : token,
       profilePic : body['profilePic'] ?? '',
-      credits    : (body['credits'] is int) ? body['credits'] as int : 0,
+      credits    : (body['credits'] is int) ? body['credits'] as int : 20,
     );
   }
 
@@ -188,7 +188,7 @@ class UserRepositoryImpl implements UserRepository {
       password   : '',
       token      : token,
       profilePic : body['profilePic'] ?? '',
-      credits    : (body['credits'] is int) ? body['credits'] as int : 0,
+      credits    : (body['credits'] is int) ? body['credits'] as int : 20,
     );
   }
 
